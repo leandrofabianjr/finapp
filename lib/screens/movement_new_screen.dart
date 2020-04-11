@@ -39,7 +39,7 @@ class _MovementNewFormState extends State<MovementNewForm> {
                 }
                 return null;
               },
-              onSaved: (val) => _movement.nome = val,
+              onSaved: (val) => _movement.name = val,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
