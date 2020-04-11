@@ -40,5 +40,6 @@ class Db {
         await db.execute(query);
       });
     });
+    debugPrint('Migration succeeded');
   }
 }
