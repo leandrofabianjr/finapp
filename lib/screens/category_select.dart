@@ -40,7 +40,7 @@ class _CategorySelectState extends State<CategorySelect> {
                       var category = categories[index];
                       return ListTile(
                         title: Text(category.name),
-                        leading: Icon(Icons.local_offer),
+                        leading: Icon(Icons.local_offer, color: category.color),
                         subtitle: category.description != null ? Text(category.description) : null,
                         trailing: category.createdAt != null ? Icon(Icons.edit) : null,
                         onTap: () {
@@ -48,7 +48,7 @@ class _CategorySelectState extends State<CategorySelect> {
                         },
                       );
                     },
-                    itemCount: categories.length,
+                    itemCount: categories != null ? categories.length : 0,
                   );
                   return list;
                   break;
