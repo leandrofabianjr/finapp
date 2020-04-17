@@ -1,6 +1,7 @@
 import 'package:finapp/db/daos/dao.dart';
 import 'package:finapp/helpers/date_helper.dart';
 import 'package:finapp/models/category.dart';
+import 'package:flutter/cupertino.dart';
 
 class CategoryDao extends Dao<Category> {
   @override
@@ -12,6 +13,7 @@ class CategoryDao extends Dao<Category> {
   String colName = 'name';
   String colIdCategoryType = 'id_category_type';
   String colDescription = 'description';
+  String colColor = 'color';
   String colCreatedAt = 'created_at';
   String colDeletedAt = 'deleted_at';
 
@@ -22,6 +24,7 @@ class CategoryDao extends Dao<Category> {
       colName: obj.name,
       colDescription: obj.description,
       colIdCategoryType: obj.idCategoryType,
+      colColor: obj.color,
       colCreatedAt: obj.createdAt.toString(),
       colDeletedAt: obj.deletedAt.toString()
     };
@@ -34,6 +37,7 @@ class CategoryDao extends Dao<Category> {
         name: row[colName],
         description: row[colDescription],
         idCategoryType: row[colIdCategoryType],
+        color: Color(int.parse(row[colColor])),
         createdAt: DateHelper.stringToDateTime(row[colCreatedAt]),
         deletedAt: DateHelper.stringToDateTime(row[colDeletedAt]));
   }

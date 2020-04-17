@@ -24,8 +24,7 @@ abstract class Dao<T> {
 
   Future<T> findById(int pk) async {
     final Database db = await Db.getDb();
-    final List<Map<String, dynamic>> result =
-    await db.query(tblName,
+    final List<Map<String, dynamic>> result = await db.query(tblName,
         where: '$colPk = ?',
         whereArgs: [pk]
     );
