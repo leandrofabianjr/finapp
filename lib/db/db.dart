@@ -1,43 +1,43 @@
-import 'package:finapp/db/sqls.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Db {
-  static final int version = 1;
+  static final int lastVersion = 1;
   static final String dbName = 'finapp.db';
 
   static Future<Database> getDb() async {
     final String path = join(await getDatabasesPath(), dbName);
     return openDatabase(
       path,
-      onCreate: (db, version) {
+      onCreate: (db, newVersion) async {
         debugPrint('Creating database');
-        _migrateDb(db, 0, version);
+        await _migrateDb(db, 0, newVersion);
       },
-      onUpgrade: (db, oldVersion, newVersion) {
+      onUpgrade: (db, currentVersion, newVersion) async {
         debugPrint('Upgrading database');
-        _migrateDb(db, oldVersion, newVersion);
+        await _migrateDb(db, currentVersion, newVersion);
       },
-//      onDowngrade: (db, v1, v2) async {
-//        debugPrint('Droping database: $v1 $v2');
-//        db.query('sqlite_master').then((res) {
-//          res.forEach((tbl) async {
-//            debugPrint('drop table ${tbl['name']}');
-//            await db.execute('drop table ${tbl['name']}');
-//          });
-//        });
-//      },
-      version: version,
+      version: lastVersion,
     );
   }
 
-  static _migrateDb(db, oldVersion, newVersion) {
-    List<int>.generate(newVersion - oldVersion, (i) => oldVersion + i).forEach((version) {
+  static _migrateDb(Database db, currentVersion, newVersion) async {
+    List<int> versionsToMigrate = List<int>
+        .generate(newVersion - currentVersion, (i) => currentVersion + 1 + i);
+
+    versionsToMigrate.forEach((version) async {
+      String sql = await rootBundle.loadString(join('assets','db','$version.sql'));
       debugPrint('Executing database scripts to version $version');
-      sqlVersions[version].forEach((query) async {
-        debugPrint(query);
-        await db.execute(query);
+      var queries = sql.split(';');
+      queries.forEach((q) async {
+        String query = q.trim();
+        if (query.isNotEmpty) {
+          debugPrint(query);
+          await db.query(query);
+          debugPrint('Query executed');
+        }
       });
     });
     debugPrint('Migration succeeded');
