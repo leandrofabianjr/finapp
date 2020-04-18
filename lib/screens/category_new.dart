@@ -1,5 +1,7 @@
+import 'package:finapp/db/daos/category_dao.dart';
 import 'package:finapp/models/category.dart';
 import 'package:finapp/models/category_type.dart';
+import 'package:finapp/shared/alerts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -117,7 +119,15 @@ class _CategoryNewFormState extends State<CategoryNewForm> {
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      Navigator.pop<Category>(context, _category);
+                      CategoryDao().save(_category).then((id) {
+                        _category.id = id;
+                        Navigator.pop<Category>(context, _category);
+                      }).catchError((err) {
+                        debugPrint(
+                            'Erro ao salvar categoria: ${err.toString()}');
+                        Alerts.warning(context,
+                            'Desculpe, a categoria não pode ser salva');
+                      });
                     }
                   },
                   child: Text('Salvar categoria'),

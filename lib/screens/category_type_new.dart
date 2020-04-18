@@ -1,4 +1,6 @@
+import 'package:finapp/db/daos/category_type_dao.dart';
 import 'package:finapp/models/category_type.dart';
+import 'package:finapp/shared/alerts.dart';
 import 'package:flutter/material.dart';
 
 class CategoryTypeNewScreen extends StatelessWidget {
@@ -22,46 +24,56 @@ class _CategoryTypeNewFormState extends State<CategoryTypeNewForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Nome',
-              ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'O tipo de categoria precisa de um nome';
-                }
-                return null;
-              },
-              onSaved: (val) => _categoryType.name = val,
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Descrição (opcional)',
-              ),
-              onSaved: (val) => _categoryType.description = val,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: RaisedButton(
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    _formKey.currentState.save();
-                    Navigator.pop<CategoryType>(context, _categoryType);
+    return ListView(children: <Widget>[
+      Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Nome',
+                ),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'O tipo de categoria precisa de um nome';
                   }
+                  return null;
                 },
-                child: Text('Salvar tipo de categoria'),
+                onSaved: (val) => _categoryType.name = val,
               ),
-            ),
-          ],
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Descrição (opcional)',
+                ),
+                onSaved: (val) => _categoryType.description = val,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: RaisedButton(
+                  child: Text('Salvar tipo de categoria'),
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      _formKey.currentState.save();
+                      CategoryTypeDao().save(_categoryType).then((id) {
+                        _categoryType.id = id;
+                        Navigator.pop<CategoryType>(context, _categoryType);
+                      }).catchError((err) {
+                        debugPrint(
+                            'Erro ao salvar tipo de categoria: ${err.toString()}');
+                        Alerts.warning(context,
+                            'Desculpe, o tipo de categoria não pode ser salvo');
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    );
+    ]);
   }
 }

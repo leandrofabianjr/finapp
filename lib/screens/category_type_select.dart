@@ -41,12 +41,9 @@ class _CategoryTypeSelectState extends State<CategoryTypeSelect> {
                     var categoryType = categoryTypes[index];
                     return ListTile(
                       title: Text(categoryType.name),
-                      leading: Icon(Icons.local_offer),
                       subtitle: categoryType.description != null ? Text(categoryType.description) : null,
                       trailing: categoryType.createdAt != null ? Icon(Icons.edit) : null,
-                      onTap: () {
-                        Navigator.pop<CategoryType>(context, categoryType);
-                      },
+                      onTap: () => Navigator.pop<CategoryType>(context, categoryType),
                     );
                   },
                   itemCount: categoryTypes.length,
@@ -60,10 +57,14 @@ class _CategoryTypeSelectState extends State<CategoryTypeSelect> {
           }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
+        onPressed: () => Navigator.push<CategoryType>(
             context,
             MaterialPageRoute(builder: (BuildContext context) => CategoryTypeNewScreen())
-        ),
+        ).then((categoryType) {
+          if (categoryType != null) {
+            Navigator.pop<CategoryType>(context, categoryType);
+          }
+        }),
         child: Icon(Icons.add),
       ),
     );

@@ -59,10 +59,14 @@ class _CategorySelectState extends State<CategorySelect> {
             }
         ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
+        onPressed: () => Navigator.push<Category>(
             context,
             MaterialPageRoute(builder: (BuildContext context) => CategoryNewScreen())
-        ),
+        ).then((category) {
+          if (category != null) {
+            Navigator.pop<Category>(context, category);
+          }
+        }),
         child: Icon(Icons.add),
       ),
     );
