@@ -1,4 +1,6 @@
-class Movement {
+import 'package:finapp/models/model.dart';
+
+class Movement implements Model {
   int id;
   String name;
   String description;

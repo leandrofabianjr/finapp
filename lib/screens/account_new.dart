@@ -3,7 +3,6 @@ import 'package:finapp/models/account.dart';
 import 'package:finapp/models/account_type.dart';
 import 'package:finapp/screens/account_type_select.dart';
 import 'package:finapp/shared/components/alerts.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AccountNewScreen extends StatelessWidget {
@@ -79,9 +78,8 @@ class _AccountNewFormState extends State<AccountNewForm> {
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      AccountDao().save(_account).then((id) {
-                        _account.id = id;
-                        Navigator.pop<Account>(context, _account);
+                      AccountDao().insert(_account).then((obj) {
+                        Navigator.pop<Account>(context, obj);
                       }).catchError((err) {
                         debugPrint('Erro ao salvar conta: ${err.toString()}');
                         Alerts.warning(

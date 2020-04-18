@@ -6,8 +6,6 @@ import 'dao.dart';
 class MovementDao extends Dao<Movement> {
   @override
   String tblName = 'movement';
-  @override
-  String colPk = 'id';
 
   String colId = 'id';
   String colName = 'name';
@@ -16,8 +14,6 @@ class MovementDao extends Dao<Movement> {
   String colDatetime = 'datetime';
   String colIdAccount = 'id_account';
   String colIdCategory = 'id_category';
-  String colCreatedAt = 'created_at';
-  String colDeletedAt = 'deleted_at';
 
   @override
   Map<String, dynamic> toRow(Movement obj) {
@@ -29,22 +25,19 @@ class MovementDao extends Dao<Movement> {
       colDatetime: DateHelper.dateTimeToString(obj.datetime),
       colIdAccount: obj.idAccount,
       colIdCategory: obj.idCategory,
-      colCreatedAt: DateHelper.dateTimeToString(obj.createdAt),
-      colDeletedAt: DateHelper.dateTimeToString(obj.deletedAt)
     };
   }
 
   @override
   Movement toObj(Map<String, dynamic> row) {
     return Movement(
-        id: row[colId],
-        name: row[colName],
-        description: row[colDescription],
-        value: row[colValue],
-        datetime: row[colDatetime],
-        idAccount: row[colIdAccount],
-        idCategory: row[colIdCategory],
-        createdAt: DateHelper.stringToDateTime(row[colCreatedAt]),
-        deletedAt: DateHelper.stringToDateTime(row[colDeletedAt]));
+      id: row[colId],
+      name: row[colName],
+      description: row[colDescription],
+      value: row[colValue],
+      datetime: row[colDatetime],
+      idAccount: row[colIdAccount],
+      idCategory: row[colIdCategory],
+    );
   }
 }

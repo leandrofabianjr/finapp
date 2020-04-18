@@ -1,4 +1,3 @@
-import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:finapp/models/account.dart';
 
 import 'dao.dart';
@@ -6,15 +5,11 @@ import 'dao.dart';
 class AccountDao extends Dao<Account> {
   @override
   String tblName = 'account';
-  @override
-  String colPk = 'id';
 
   String colId = 'id';
   String colName = 'name';
   String colDescription = 'description';
   String colIdAccountType = 'id_account_type';
-  String colCreatedAt = 'created_at';
-  String colDeletedAt = 'deleted_at';
 
   @override
   Account toObj(Map<String, dynamic> row) {
@@ -23,8 +18,6 @@ class AccountDao extends Dao<Account> {
       name: row[colName],
       description: row[colDescription],
       idAccountType: row[colIdAccountType],
-      createdAt: DateHelper.stringToDateTime(row[colCreatedAt]),
-      deletedAt: DateHelper.stringToDateTime(row[colDeletedAt]),
     );
   }
 
@@ -35,8 +28,6 @@ class AccountDao extends Dao<Account> {
       colName: obj.name,
       colDescription: obj.description,
       colIdAccountType: obj.idAccountType,
-      colCreatedAt: obj.createdAt.toString(),
-      colDeletedAt: obj.deletedAt.toString()
     };
   }
 }

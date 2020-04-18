@@ -129,9 +129,8 @@ class _MovementNewFormState extends State<MovementNewForm> {
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      MovementDao().save(_movement).then((id) {
-                        _movement.id = id;
-                        Navigator.pop<Movement>(context, _movement);
+                      MovementDao().insert(_movement).then((obj) {
+                        Navigator.pop<Movement>(context, obj);
                       }).catchError((err) {
                         debugPrint(
                             'Erro ao salvar movimento: ${err.toString()}');

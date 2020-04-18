@@ -57,9 +57,8 @@ class _CategoryTypeNewFormState extends State<CategoryTypeNewForm> {
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      CategoryTypeDao().save(_categoryType).then((id) {
-                        _categoryType.id = id;
-                        Navigator.pop<CategoryType>(context, _categoryType);
+                      CategoryTypeDao().insert(_categoryType).then((obj) {
+                        Navigator.pop<CategoryType>(context, obj);
                       }).catchError((err) {
                         debugPrint(
                             'Erro ao salvar tipo de categoria: ${err.toString()}');

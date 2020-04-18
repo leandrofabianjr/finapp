@@ -57,9 +57,8 @@ class _AccountTypeNewFormState extends State<AccountTypeNewForm> {
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      AccountTypeDao().save(_accountType).then((id) {
-                        _accountType.id = id;
-                        Navigator.pop<AccountType>(context, _accountType);
+                      AccountTypeDao().insert(_accountType).then((obj) {
+                        Navigator.pop<AccountType>(context, obj);
                       }).catchError((err) {
                         debugPrint(
                             'Erro ao salvar tipo de conta: ${err.toString()}');

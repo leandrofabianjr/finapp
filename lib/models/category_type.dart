@@ -1,4 +1,6 @@
-class CategoryType {
+import 'package:finapp/models/model.dart';
+
+class CategoryType implements Model {
   int id;
   String name;
   String description;

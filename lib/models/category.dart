@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:finapp/models/model.dart';
+import 'package:flutter/material.dart';
 
-class Category {
+class Category implements Model {
   int id;
   String name;
   String description;

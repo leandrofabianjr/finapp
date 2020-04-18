@@ -2,7 +2,6 @@ import 'package:finapp/db/daos/category_dao.dart';
 import 'package:finapp/models/category.dart';
 import 'package:finapp/models/category_type.dart';
 import 'package:finapp/shared/components/alerts.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -119,9 +118,8 @@ class _CategoryNewFormState extends State<CategoryNewForm> {
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      CategoryDao().save(_category).then((id) {
-                        _category.id = id;
-                        Navigator.pop<Category>(context, _category);
+                      CategoryDao().insert(_category).then((obj) {
+                        Navigator.pop<Category>(context, obj);
                       }).catchError((err) {
                         debugPrint(
                             'Erro ao salvar categoria: ${err.toString()}');

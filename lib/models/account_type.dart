@@ -1,4 +1,6 @@
-class AccountType {
+import 'package:finapp/models/model.dart';
+
+class AccountType implements Model {
   int id;
   String name;
   String description;
