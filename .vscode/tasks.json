@@ -1,0 +1,15 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Apagar banco de dados do dispositivo",
+            "type": "shell",
+            "command": [
+                "adb shell \"run-as com.example.finapp rm /data/data/com.example.finapp/databases/finapp.db\" && adb shell \"run-as com.example.finapp rm /data/data/com.example.finapp/databases/finapp.db-journal\""
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
