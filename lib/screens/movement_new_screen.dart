@@ -3,6 +3,7 @@ import 'package:finapp/models/category.dart';
 import 'package:finapp/models/movement.dart';
 import 'package:finapp/screens/account_select.dart';
 import 'package:finapp/screens/category_select.dart';
+import 'package:finapp/shared/forms/money_text_editing_controller.dart';
 import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -24,9 +25,18 @@ class MovementNewForm extends StatefulWidget {
 class _MovementNewFormState extends State<MovementNewForm> {
   final _formKey = GlobalKey<FormState>();
   Movement _movement = Movement();
+  var _txtFieldValueCtrl = MoneyTextEditingController();
   var _txtFieldCategoryCtrl = TextEditingController();
   var _txtFieldAccountCtrl = TextEditingController();
   var _txtFieldDateCtrl = TextEditingController();
+
+  void dispose() {
+    _txtFieldValueCtrl.dispose();
+    _txtFieldCategoryCtrl.dispose();
+    _txtFieldAccountCtrl.dispose();
+    _txtFieldDateCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,22 +49,21 @@ class _MovementNewFormState extends State<MovementNewForm> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Nome',
-                ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Identifique a movimentação';
-                  }
-                  return null;
-                },
+                  controller: _txtFieldValueCtrl,
+                  decoration: const InputDecoration(labelText: 'Valor (R\$)'),
+                  keyboardType: TextInputType.number,
+                  validator: (value) =>
+                      value.isEmpty ? 'Qual é o valor da movimentação?' : null,
+                  onSaved: (val) => _movement.value = double.parse(val)),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Nome'),
+                validator: (value) =>
+                    value.isEmpty ? 'Identifique a movimentação' : null,
                 onSaved: (val) => _movement.name = val,
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Dia',
-                ),
                 controller: _txtFieldDateCtrl,
+                decoration: const InputDecoration(labelText: 'Dia'),
                 readOnly: true,
                 onTap: () async {
                   final nowDateTime = DateTime.now();
@@ -66,7 +75,8 @@ class _MovementNewFormState extends State<MovementNewForm> {
                   if (picked != null) {
                     setState(() {
                       _movement.datetime = picked;
-                      _txtFieldDateCtrl.text = DateHelper.formatDateWeek(picked);
+                      _txtFieldDateCtrl.text =
+                          DateHelper.formatDateWeek(picked);
                     });
                   }
                 },

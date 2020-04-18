@@ -5,7 +5,7 @@ class Movement {
   String name;
   String description;
   DateTime datetime;
-  Float value;
+  double value;
   int idAccount;
   int idCategory;
   DateTime createdAt;
