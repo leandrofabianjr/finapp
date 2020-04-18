@@ -1,4 +1,5 @@
 import 'package:finapp/screens/dashboard_screen.dart';
+import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:flutter/material.dart';
 
 import 'db/db.dart';
@@ -8,6 +9,7 @@ void main() {
   Db.getDb()
     .then((db) => debugPrint('Database started'))
     .catchError((err) => debugPrint('Can\'t start Database: ${err.toString()}'));
+  DateHelper.setDefaultLocale();
 }
 
 class FinApp extends StatelessWidget {
