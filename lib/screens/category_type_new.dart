@@ -1,6 +1,6 @@
 import 'package:finapp/db/daos/category_type_dao.dart';
 import 'package:finapp/models/category_type.dart';
-import 'package:finapp/shared/alerts.dart';
+import 'package:finapp/shared/components/alerts.dart';
 import 'package:flutter/material.dart';
 
 class CategoryTypeNewScreen extends StatelessWidget {

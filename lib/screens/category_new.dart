@@ -1,7 +1,7 @@
 import 'package:finapp/db/daos/category_dao.dart';
 import 'package:finapp/models/category.dart';
 import 'package:finapp/models/category_type.dart';
-import 'package:finapp/shared/alerts.dart';
+import 'package:finapp/shared/components/alerts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';

@@ -1,5 +1,5 @@
 import 'package:finapp/db/daos/dao.dart';
-import 'package:finapp/helpers/date_helper.dart';
+import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:finapp/models/category_type.dart';
 
 class CategoryTypeDao extends Dao<CategoryType> {

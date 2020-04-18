@@ -1,4 +1,4 @@
-import 'package:finapp/helpers/date_helper.dart';
+import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:finapp/models/account_type.dart';
 
 import 'dao.dart';
