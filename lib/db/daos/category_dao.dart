@@ -24,7 +24,7 @@ class CategoryDao extends Dao<Category> {
       colName: obj.name,
       colDescription: obj.description,
       colIdCategoryType: obj.idCategoryType,
-      colColor: obj.color,
+      colColor: obj.color.value,
       colCreatedAt: obj.createdAt.toString(),
       colDeletedAt: obj.deletedAt.toString()
     };
@@ -37,7 +37,7 @@ class CategoryDao extends Dao<Category> {
         name: row[colName],
         description: row[colDescription],
         idCategoryType: row[colIdCategoryType],
-        color: Color(int.parse(row[colColor])),
+        color: Color(row[colColor]),
         createdAt: DateHelper.stringToDateTime(row[colCreatedAt]),
         deletedAt: DateHelper.stringToDateTime(row[colDeletedAt]));
   }
