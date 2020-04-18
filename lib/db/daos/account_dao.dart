@@ -5,7 +5,7 @@ import 'dao.dart';
 
 class AccountDao extends Dao<Account> {
   @override
-  String tblName = 'account_type';
+  String tblName = 'account';
   @override
   String colPk = 'id';
 

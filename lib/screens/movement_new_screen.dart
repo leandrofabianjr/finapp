@@ -1,5 +1,7 @@
+import 'package:finapp/models/account.dart';
 import 'package:finapp/models/category.dart';
 import 'package:finapp/models/movement.dart';
+import 'package:finapp/screens/account_select.dart';
 import 'package:finapp/screens/category_select.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,7 @@ class _MovementNewFormState extends State<MovementNewForm> {
   final _formKey = GlobalKey<FormState>();
   Movement _movement = Movement();
   var _txtFieldCategoryCtrl = TextEditingController();
+  var _txtFieldAccountCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,21 +49,40 @@ class _MovementNewFormState extends State<MovementNewForm> {
             ),
             TextFormField(
               decoration: const InputDecoration(
+                labelText: 'Conta',
+              ),
+              controller: _txtFieldAccountCtrl,
+              readOnly: true,
+              onTap: () {
+                Navigator.push<Account>(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => AccountSelect()))
+                    .then((cat) {
+                  if (cat != null) {
+                    _movement.idAccount = cat.id;
+                    _txtFieldAccountCtrl.text = cat.name;
+                  }
+                });
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
                 labelText: 'Categoria',
               ),
               controller: _txtFieldCategoryCtrl,
               readOnly: true,
               onTap: () {
-                Navigator
-                  .push<Category>(
+                Navigator.push<Category>(
                     context,
-                    MaterialPageRoute(builder: (BuildContext context) => CategorySelect())
-                  ).then((cat) {
-                    if (cat != null) {
-                      _movement.idCategory = cat.id;
-                      _txtFieldCategoryCtrl.text = cat.name;
-                    }
-                  });
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            CategorySelect())).then((cat) {
+                  if (cat != null) {
+                    _movement.idCategory = cat.id;
+                    _txtFieldCategoryCtrl.text = cat.name;
+                  }
+                });
               },
             ),
             Padding(
