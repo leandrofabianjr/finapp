@@ -6,8 +6,8 @@ import 'db/db.dart';
 void main() {
   runApp(FinApp());
   Db.getDb()
-    .then((db) => debugPrint('Database working'))
-    .catchError((err) => debugPrint('Database is not working: ${err.toString()}'));
+    .then((db) => debugPrint('Database started'))
+    .catchError((err) => debugPrint('Can\'t start Database: ${err.toString()}'));
 }
 
 class FinApp extends StatelessWidget {
