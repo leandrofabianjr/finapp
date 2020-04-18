@@ -28,18 +28,18 @@ class Db {
         .generate(newVersion - currentVersion, (i) => currentVersion + 1 + i);
 
     versionsToMigrate.forEach((version) async {
-      String sql = await rootBundle.loadString(join('assets','db','$version.sql'));
+      String script = await rootBundle.loadString(join('assets','db','$version.sql'));
       debugPrint('Executing database scripts to version $version');
-      var queries = sql.split(';');
+      var queries = script.split(';');
       queries.forEach((q) async {
-        String query = q.trim();
-        if (query.isNotEmpty) {
-          debugPrint(query);
-          await db.query(query);
+        String sql = q.trim();
+        if (sql.isNotEmpty) {
+          debugPrint(sql);
+          await db.execute(sql);
           debugPrint('Query executed');
         }
       });
+      debugPrint('Migration succeeded');
     });
-    debugPrint('Migration succeeded');
   }
 }
