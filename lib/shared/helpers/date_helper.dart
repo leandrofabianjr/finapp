@@ -18,4 +18,11 @@ class DateHelper {
   static String formatDateWeek(DateTime date) {
     return DateFormat.yMMMMEEEEd().format(date);
   }
+
+  static dateTimeToString(DateTime dateTime) {
+    if (dateTime != null) {
+      return dateTime.toIso8601String();
+    }
+    return null;
+  }
 }

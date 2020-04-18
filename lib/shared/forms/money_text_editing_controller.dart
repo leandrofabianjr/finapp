@@ -34,4 +34,9 @@ class MoneyTextEditingController extends TextEditingController {
       value.substring(0, value.length - this.decimals) +
       this.separator +
       value.substring(value.length - this.decimals);
+
+  get valueAsDouble {
+    String strDouble = this.text.replaceAll(this.separator, '.');
+    return double.parse(strDouble);
+  }
 }

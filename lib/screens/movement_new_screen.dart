@@ -1,8 +1,10 @@
+import 'package:finapp/db/daos/movement_dao.dart';
 import 'package:finapp/models/account.dart';
 import 'package:finapp/models/category.dart';
 import 'package:finapp/models/movement.dart';
 import 'package:finapp/screens/account_select.dart';
 import 'package:finapp/screens/category_select.dart';
+import 'package:finapp/shared/components/alerts.dart';
 import 'package:finapp/shared/forms/money_text_editing_controller.dart';
 import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +56,8 @@ class _MovementNewFormState extends State<MovementNewForm> {
                   keyboardType: TextInputType.number,
                   validator: (value) =>
                       value.isEmpty ? 'Qual é o valor da movimentação?' : null,
-                  onSaved: (val) => _movement.value = double.parse(val)),
+                  onSaved: (val) =>
+                      _movement.value = _txtFieldValueCtrl.valueAsDouble),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Nome'),
                 validator: (value) =>
@@ -82,9 +85,7 @@ class _MovementNewFormState extends State<MovementNewForm> {
                 },
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Conta',
-                ),
+                decoration: const InputDecoration(labelText: 'Conta'),
                 controller: _txtFieldAccountCtrl,
                 readOnly: true,
                 onTap: () {
@@ -92,18 +93,16 @@ class _MovementNewFormState extends State<MovementNewForm> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              AccountSelect())).then((cat) {
-                    if (cat != null) {
-                      _movement.idAccount = cat.id;
-                      _txtFieldAccountCtrl.text = cat.name;
+                              AccountSelect())).then((acc) {
+                    if (acc != null) {
+                      _movement.idAccount = acc.id;
+                      _txtFieldAccountCtrl.text = acc.name;
                     }
                   });
                 },
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Categoria',
-                ),
+                decoration: const InputDecoration(labelText: 'Categoria'),
                 controller: _txtFieldCategoryCtrl,
                 readOnly: true,
                 onTap: () {
@@ -119,13 +118,26 @@ class _MovementNewFormState extends State<MovementNewForm> {
                   });
                 },
               ),
+              TextFormField(
+                decoration:
+                    const InputDecoration(labelText: 'Descrição (opcional)'),
+                onSaved: (val) => _movement.description = val,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: RaisedButton(
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      Navigator.pop<Movement>(context, _movement);
+                      MovementDao().save(_movement).then((id) {
+                        _movement.id = id;
+                        Navigator.pop<Movement>(context, _movement);
+                      }).catchError((err) {
+                        debugPrint(
+                            'Erro ao salvar movimento: ${err.toString()}');
+                        Alerts.warning(context,
+                            'Desculpe, o movimento não pode ser salvo');
+                      });
                     }
                   },
                   child: Text('Salvar movimentação'),
