@@ -2,8 +2,8 @@ import 'package:finapp/db/daos/movement_dao.dart';
 import 'package:finapp/models/account.dart';
 import 'package:finapp/models/category.dart';
 import 'package:finapp/models/movement.dart';
-import 'package:finapp/screens/account_select.dart';
-import 'package:finapp/screens/category_select.dart';
+import 'package:finapp/screens/account_select_screen.dart';
+import 'package:finapp/screens/category_select_screen.dart';
 import 'package:finapp/shared/components/alerts.dart';
 import 'package:finapp/shared/forms/money_text_editing_controller.dart';
 import 'package:finapp/shared/helpers/date_helper.dart';
@@ -93,7 +93,7 @@ class _MovementNewFormState extends State<MovementNewForm> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              AccountSelect())).then((acc) {
+                              AccountSelectScreen())).then((acc) {
                     if (acc != null) {
                       _movement.idAccount = acc.id;
                       _txtFieldAccountCtrl.text = acc.name;
@@ -110,7 +110,7 @@ class _MovementNewFormState extends State<MovementNewForm> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              CategorySelect())).then((cat) {
+                              CategorySelectScreen())).then((cat) {
                     if (cat != null) {
                       _movement.idCategory = cat.id;
                       _txtFieldCategoryCtrl.text = cat.name;

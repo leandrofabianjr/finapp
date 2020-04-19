@@ -1,10 +1,10 @@
 import 'package:finapp/db/daos/category_dao.dart';
 import 'package:finapp/models/category.dart';
-import 'package:finapp/screens/category_new.dart';
+import 'package:finapp/screens/category_new_screen.dart';
 import 'package:finapp/shared/components/select_list.dart';
 import 'package:flutter/material.dart';
 
-class CategorySelect extends StatelessWidget {
+class CategorySelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

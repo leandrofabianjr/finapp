@@ -12,11 +12,11 @@ class DashboardScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
-          Navigator
-            .push<Movement>(context,MaterialPageRoute(builder: (BuildContext context) => MovementNewScreen()))
-            .then((movement) => {
-              print(movement.toString())
-            })
+          Navigator.push<Movement>(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => MovementNewScreen()))
+              .then((movement) => {print(movement.toString())})
         },
         child: Icon(Icons.add),
       ),

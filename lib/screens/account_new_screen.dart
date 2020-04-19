@@ -1,7 +1,7 @@
 import 'package:finapp/db/daos/account_dao.dart';
 import 'package:finapp/models/account.dart';
 import 'package:finapp/models/account_type.dart';
-import 'package:finapp/screens/account_type_select.dart';
+import 'package:finapp/screens/account_type_select_screen.dart';
 import 'package:finapp/shared/components/alerts.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +64,7 @@ class _AccountNewFormState extends State<AccountNewForm> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              AccountTypeSelect())).then((accType) {
+                              AccountTypeSelectScreen())).then((accType) {
                     if (accType != null) {
                       _account.idAccountType = accType.id;
                       _txtFieldAccountTypeCtrl.text = accType.name;

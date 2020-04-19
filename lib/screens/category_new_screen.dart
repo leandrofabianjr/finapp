@@ -1,11 +1,10 @@
 import 'package:finapp/db/daos/category_dao.dart';
 import 'package:finapp/models/category.dart';
 import 'package:finapp/models/category_type.dart';
+import 'package:finapp/screens/category_type_select_screen.dart';
 import 'package:finapp/shared/components/alerts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-
-import 'category_type_select.dart';
 
 class CategoryNewScreen extends StatelessWidget {
   @override
@@ -68,7 +67,7 @@ class _CategoryNewFormState extends State<CategoryNewForm> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              CategoryTypeSelect())).then((catType) {
+                              CategoryTypeSelectScreen())).then((catType) {
                     if (catType != null) {
                       _category.idCategoryType = catType.id;
                       _txtFieldCategoryTypeCtrl.text = catType.name;

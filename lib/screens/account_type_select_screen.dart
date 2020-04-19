@@ -1,37 +1,33 @@
-
-import 'package:finapp/db/daos/account_dao.dart';
-import 'package:finapp/models/account.dart';
+import 'package:finapp/db/daos/account_type_dao.dart';
+import 'package:finapp/models/account_type.dart';
+import 'package:finapp/screens/account_type_new_screen.dart';
 import 'package:finapp/shared/components/select_list.dart';
 import 'package:flutter/material.dart';
 
-import 'account_new.dart';
-
-class AccountSelect extends StatelessWidget {
+class AccountTypeSelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Selecione uma conta'),
+        title: Text('Selecione um tipo de conta'),
       ),
-      body: SelectList<Account>(
-          data: AccountDao().findAll(),
+      body: SelectList(
+          data: AccountTypeDao().findAll(),
           listTileBuilder: (context, obj) => ListTile(
                 title: Text(obj.name),
                 subtitle:
                     obj.description != null ? Text(obj.description) : null,
                 trailing: obj.createdAt != null ? Icon(Icons.edit) : null,
-                onTap: () {
-                  Navigator.pop<Account>(context, obj);
-                },
+                onTap: () => Navigator.pop<AccountType>(context, obj),
               )),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push<Account>(
+        onPressed: () => Navigator.push<AccountType>(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => AccountNewScreen()))
-            .then((category) {
-          if (category != null) {
-            Navigator.pop<Account>(context, category);
+                    builder: (BuildContext context) => AccountTypeNewScreen()))
+            .then((accountType) {
+          if (accountType != null) {
+            Navigator.pop<AccountType>(context, accountType);
           }
         }),
         child: Icon(Icons.add),
