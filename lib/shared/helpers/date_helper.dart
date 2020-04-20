@@ -33,4 +33,8 @@ class DateHelper {
   static String getMonthName(DateTime datetime) {
     return DateFormat.MMMM().format(datetime);
   }
+
+  static bool isToday(DateTime datetime) {
+    return DateTime.now().difference(datetime).inDays == 0;
+  }
 }

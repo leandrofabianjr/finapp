@@ -84,60 +84,98 @@ class _MovementListScreenState extends State<MovementListScreen> {
     for (int i = 0; i < movements.length; i++) {
       final movement = movements[i];
       debugPrint(movement.toString());
-      final category = _catDao.cache[movement.idCategory];
+
       if (day != movement.datetime.day || month != movement.datetime.month) {
         day = movement.datetime.day;
         month = movement.datetime.month;
-        list.add(Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                day.toString(),
-                style: TextStyle(
-                  fontSize: Theme.of(context).textTheme.title.fontSize,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
+        list.add(_buildDayDividerWidget(day, movement));
+      }
+      list.add(_buildMovementWidget(movement));
+    }
+    return list;
+  }
+
+  Widget _buildDayDividerWidget(int day, Movement movement) {
+    Widget content;
+    if (DateHelper.isToday(movement.datetime)) {
+      content = Text(
+        'Hoje',
+        style: TextStyle(
+          fontSize: Theme.of(context).textTheme.subtitle.fontSize,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).primaryColor,
+        ),
+      );
+    } else {
+      content = Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: 24,
+            height: 24,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  day.toString(),
+                  style: TextStyle(
+                    fontSize: Theme.of(context).textTheme.title.fontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
-              ),
+              ],
             ),
-            Text(DateHelper.getMonthName(movement.datetime).toUpperCase(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(
+              DateHelper.getMonthName(movement.datetime).toUpperCase(),
               style: TextStyle(
+                fontSize: Theme.of(context).textTheme.subtitle.fontSize,
                 color: Theme.of(context).primaryColor.withAlpha(100),
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ],
-        ));
-      }
-      list.add(Card(
-        child: ListTile(
-            leading: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.local_offer, color: category.color),
-              ],
-            ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Text(
-                  'R\$ ' + movement.value.toStringAsFixed(2),
-                  style: TextStyle(
-                      fontSize: Theme.of(context).textTheme.subtitle.fontSize),
-                ),
-              ],
-            ),
-            title: Text(movement.name + ' ' + movement.datetime.day.toString()),
-            subtitle: Row(children: <Widget>[
-              Text(category.name),
-            ])),
-      ));
+          ),
+        ],
+      );
     }
-    return list;
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, top: 8.0, right: 8, bottom: 8),
+      child: content,
+    );
+  }
+
+  Widget _buildMovementWidget(Movement movement) {
+    final category = _catDao.cache[movement.idCategory];
+    return Card(
+      child: ListTile(
+          leading: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.local_offer, color: category.color),
+            ],
+          ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                'R\$ ' + movement.value.toStringAsFixed(2),
+                style: TextStyle(
+                    fontSize: Theme.of(context).textTheme.subtitle.fontSize),
+              ),
+            ],
+          ),
+          title: Text(movement.name + ' ' + movement.datetime.day.toString()),
+          subtitle: Row(children: <Widget>[
+            Text(category.name),
+          ])),
+    );
   }
 }
