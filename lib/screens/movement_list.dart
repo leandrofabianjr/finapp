@@ -3,6 +3,7 @@ import 'package:finapp/db/daos/category_dao.dart';
 import 'package:finapp/db/daos/movement_dao.dart';
 import 'package:finapp/models/movement.dart';
 import 'package:finapp/screens/movement_new_screen.dart';
+import 'package:finapp/shared/components/loading_warning.dart';
 import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,7 @@ class _MovementListScreenState extends State<MovementListScreen> {
         ],
       ),
       body: FutureBuilder<List<Movement>>(
+        initialData: List(),
         future: () async {
           await _accDao.findAll(cache: true);
           await _catDao.findAll(cache: true);
@@ -36,28 +38,16 @@ class _MovementListScreenState extends State<MovementListScreen> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[Text('Não há movimentações')],
-                ),
-              );
+              return _buildEmptyListWarningWidget();
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    CircularProgressIndicator(),
-                    Text('Carregando')
-                  ],
-                ),
-              );
+              return LoadingWarning();
               break;
             case ConnectionState.done:
-              return ListView(children: _buidMovementsList(snapshot.data));
+              if (snapshot.data.isEmpty) {
+                return _buildEmptyListWarningWidget();
+              }
+              return _buidMovementsList(snapshot.data);
               break;
             default:
               return Text('Erro desconhecido');
@@ -77,7 +67,17 @@ class _MovementListScreenState extends State<MovementListScreen> {
     );
   }
 
-  List<Widget> _buidMovementsList(List<Movement> movements) {
+  Center _buildEmptyListWarningWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[Text('Não há movimentações')],
+      ),
+    );
+  }
+
+  Widget _buidMovementsList(List<Movement> movements) {
     int day;
     int month;
     List<Widget> list = List();
@@ -92,7 +92,7 @@ class _MovementListScreenState extends State<MovementListScreen> {
       }
       list.add(_buildMovementWidget(movement));
     }
-    return list;
+    return ListView(children: list);
   }
 
   Widget _buildDayDividerWidget(int day, Movement movement) {
