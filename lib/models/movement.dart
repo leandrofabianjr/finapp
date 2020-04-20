@@ -1,3 +1,5 @@
+import 'package:finapp/db/daos/category_dao.dart';
+import 'package:finapp/models/category.dart';
 import 'package:finapp/models/model.dart';
 
 class Movement implements Model {
@@ -8,6 +10,7 @@ class Movement implements Model {
   double value;
   int idAccount;
   int idCategory;
+  Category _category;
   DateTime createdAt;
   DateTime deletedAt;
 
@@ -21,6 +24,13 @@ class Movement implements Model {
       this.idCategory,
       this.createdAt,
       this.deletedAt});
+
+  Future<Category> get category async {
+    if (_category == null) {
+      _category = await CategoryDao().findById(idCategory);
+    }
+    return _category;
+  }
 
   @override
   String toString() {

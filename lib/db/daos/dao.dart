@@ -9,6 +9,8 @@ abstract class Dao<T extends Model> {
   String colCreatedAt = 'created_at';
   String colDeletedAt = 'deleted_at';
 
+  Map<int, T> cache = Map();
+
   Map<String, dynamic> toRow(T obj);
   T toObj(Map<String, dynamic> row);
 
@@ -20,10 +22,13 @@ abstract class Dao<T extends Model> {
     return obj;
   }
 
-  Future<List<T>> findAll() async {
+  Future<List<T>> findAll({bool cache = false}) async {
     final Database db = await Db.getDb();
     final List<Map<String, dynamic>> result = await db.query(tblName);
     List<T> list = _toObjList(result);
+    if (cache) {
+      _saveCache(list);
+    }
     return list;
   }
 
@@ -53,5 +58,10 @@ abstract class Dao<T extends Model> {
     row[colCreatedAt] = obj.createdAt.toString();
     row[colDeletedAt] = obj.deletedAt.toString();
     return row;
+  }
+
+  _saveCache(List<T> list) {
+    this.cache.clear();
+    list.forEach((obj) => this.cache[obj.id] = obj);
   }
 }

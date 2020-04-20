@@ -35,7 +35,7 @@ class MovementDao extends Dao<Movement> {
       name: row[colName],
       description: row[colDescription],
       value: row[colValue],
-      datetime: row[colDatetime],
+      datetime: DateHelper.stringToDateTime(row[colDatetime]),
       idAccount: row[colIdAccount],
       idCategory: row[colIdCategory],
     );

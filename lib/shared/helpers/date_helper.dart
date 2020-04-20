@@ -25,4 +25,8 @@ class DateHelper {
     }
     return null;
   }
+
+  static String formatDate(DateTime date) {
+    return DateFormat.yMd().format(date);
+  }
 }
