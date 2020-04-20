@@ -22,9 +22,9 @@ abstract class Dao<T extends Model> {
     return obj;
   }
 
-  Future<List<T>> findAll({bool cache = false}) async {
+  Future<List<T>> findAll({bool cache = false, String orderBy}) async {
     final Database db = await Db.getDb();
-    final List<Map<String, dynamic>> result = await db.query(tblName);
+    final List<Map<String, dynamic>> result = await db.query(tblName, orderBy: orderBy);
     List<T> list = _toObjList(result);
     if (cache) {
       _saveCache(list);

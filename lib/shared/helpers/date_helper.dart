@@ -7,29 +7,30 @@ class DateHelper {
     await initializeDateFormatting();
   }
 
-  static DateTime unixToDateTime(int unix) {
-    if (unix != null) {
-      return DateTime.fromMicrosecondsSinceEpoch(unix * 1000);
+  static DateTime unixToDateTime(int unixEpoch) {
+    if (unixEpoch != null) {
+      return DateTime.fromMillisecondsSinceEpoch(unixEpoch * 1000);
     }
     return null;
   }
 
-  static int dateTimeToUnix(DateTime dateTime) {
-    if (dateTime != null) {
-      String strUnixMilliseconds =
-          dateTime.toUtc().millisecondsSinceEpoch.toString();
-      String strUnixSeconds =
-          strUnixMilliseconds.substring(0, strUnixMilliseconds.length - 3);
-      return int.parse(strUnixSeconds);
+  static int dateTimeToUnix(DateTime datetime) {
+    if (datetime != null) {
+      int unixEpoch = (datetime.toUtc().millisecondsSinceEpoch / 1000).round();
+      return unixEpoch;
     }
     return null;
   }
 
-  static String formatDateWeek(DateTime date) {
-    return DateFormat.yMMMMEEEEd().format(date);
+  static String formatDateWeek(DateTime datetime) {
+    return DateFormat.yMMMMEEEEd().format(datetime);
   }
 
-  static String formatDate(DateTime date) {
-    return DateFormat.yMd().format(date);
+  static String formatDate(DateTime datetime) {
+    return DateFormat.yMd().format(datetime);
+  }
+
+  static String getMonthName(DateTime datetime) {
+    return DateFormat.MMMM().format(datetime);
   }
 }

@@ -3,6 +3,7 @@ import 'package:finapp/db/daos/category_dao.dart';
 import 'package:finapp/db/daos/movement_dao.dart';
 import 'package:finapp/models/movement.dart';
 import 'package:finapp/screens/movement_new_screen.dart';
+import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:flutter/material.dart';
 
 class MovementListScreen extends StatefulWidget {
@@ -30,7 +31,7 @@ class _MovementListScreenState extends State<MovementListScreen> {
         future: () async {
           await _accDao.findAll(cache: true);
           await _catDao.findAll(cache: true);
-          return await MovementDao().findAll();
+          return await MovementDao().findAllOrderedByDate();
         }(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
@@ -56,7 +57,7 @@ class _MovementListScreenState extends State<MovementListScreen> {
               );
               break;
             case ConnectionState.done:
-              return _buidMovementsList(snapshot.data);
+              return ListView(children: _buidMovementsList(snapshot.data));
               break;
             default:
               return Text('Erro desconhecido');
@@ -76,40 +77,67 @@ class _MovementListScreenState extends State<MovementListScreen> {
     );
   }
 
-  ListView _buidMovementsList(List<Movement> movements) {
-    return ListView.builder(
-      padding: EdgeInsets.all(4),
-      itemCount: movements.length,
-      itemBuilder: (context, i) {
-        final movement = movements[i];
-        final category = _catDao.cache[movement.idCategory];
-        return Card(
-          child: ListTile(
-              leading: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.local_offer, color: category.color),
-                ],
+  List<Widget> _buidMovementsList(List<Movement> movements) {
+    int day;
+    int month;
+    List<Widget> list = List();
+    for (int i = 0; i < movements.length; i++) {
+      final movement = movements[i];
+      debugPrint(movement.toString());
+      final category = _catDao.cache[movement.idCategory];
+      if (day != movement.datetime.day || month != movement.datetime.month) {
+        day = movement.datetime.day;
+        month = movement.datetime.month;
+        list.add(Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                day.toString(),
+                style: TextStyle(
+                  fontSize: Theme.of(context).textTheme.title.fontSize,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Text(
-                    'R\$ ' + movement.value.toStringAsFixed(2),
-                    style: TextStyle(
-                        fontSize:
-                            Theme.of(context).textTheme.subtitle.fontSize),
-                  ),
-                ],
+            ),
+            Text(DateHelper.getMonthName(movement.datetime).toUpperCase(),
+              style: TextStyle(
+                color: Theme.of(context).primaryColor.withAlpha(100),
+                fontWeight: FontWeight.bold,
               ),
-              title: Text(movement.name),
-              subtitle: Row(children: <Widget>[
-                Text(category.name),
-              ])),
-        );
-      },
-    );
+            ),
+          ],
+        ));
+      }
+      list.add(Card(
+        child: ListTile(
+            leading: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.local_offer, color: category.color),
+              ],
+            ),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Text(
+                  'R\$ ' + movement.value.toStringAsFixed(2),
+                  style: TextStyle(
+                      fontSize: Theme.of(context).textTheme.subtitle.fontSize),
+                ),
+              ],
+            ),
+            title: Text(movement.name + ' ' + movement.datetime.day.toString()),
+            subtitle: Row(children: <Widget>[
+              Text(category.name),
+            ])),
+      ));
+    }
+    return list;
   }
 }

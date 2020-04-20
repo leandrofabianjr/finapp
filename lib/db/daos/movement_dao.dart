@@ -40,4 +40,8 @@ class MovementDao extends Dao<Movement> {
       idCategory: row[colIdCategory],
     );
   }
+
+  Future<List<Movement>> findAllOrderedByDate() {
+    return findAll(orderBy: '$colDatetime DESC');
+  }
 }
