@@ -37,4 +37,21 @@ class DateHelper {
   static bool isToday(DateTime datetime) {
     return DateTime.now().difference(datetime).inDays == 0;
   }
+
+  static List<String> monthsOfTheYear() {
+    return [
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro'
+    ];
+  }
 }
