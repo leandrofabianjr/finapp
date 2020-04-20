@@ -48,15 +48,15 @@ abstract class Dao<T extends Model> {
 
   T _toObj(Map<String, dynamic> row) {
     T obj = toObj(row);
-    obj.createdAt = DateHelper.stringToDateTime(row[colCreatedAt]);
-    obj.deletedAt = DateHelper.stringToDateTime(row[colDeletedAt]);
+    obj.createdAt = DateHelper.unixToDateTime(row[colCreatedAt]);
+    obj.deletedAt = DateHelper.unixToDateTime(row[colDeletedAt]);
     return obj;
   }
 
   Map<String, dynamic> _toRow(T obj) {
     Map<String, dynamic> row = toRow(obj);
-    row[colCreatedAt] = obj.createdAt.toString();
-    row[colDeletedAt] = obj.deletedAt.toString();
+    row[colCreatedAt] = DateHelper.dateTimeToUnix(obj.createdAt);
+    row[colDeletedAt] = DateHelper.dateTimeToUnix(obj.deletedAt);
     return row;
   }
 

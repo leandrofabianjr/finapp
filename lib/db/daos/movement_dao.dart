@@ -22,7 +22,7 @@ class MovementDao extends Dao<Movement> {
       colName: obj.name,
       colDescription: obj.description,
       colValue: obj.value,
-      colDatetime: DateHelper.dateTimeToString(obj.datetime),
+      colDatetime: DateHelper.dateTimeToUnix(obj.datetime),
       colIdAccount: obj.idAccount,
       colIdCategory: obj.idCategory,
     };
@@ -35,7 +35,7 @@ class MovementDao extends Dao<Movement> {
       name: row[colName],
       description: row[colDescription],
       value: row[colValue],
-      datetime: DateHelper.stringToDateTime(row[colDatetime]),
+      datetime: DateHelper.unixToDateTime(row[colDatetime]),
       idAccount: row[colIdAccount],
       idCategory: row[colIdCategory],
     );

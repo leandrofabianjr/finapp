@@ -2,28 +2,31 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class DateHelper {
-
   static void setDefaultLocale() async {
     Intl.defaultLocale = 'pt_BR';
     await initializeDateFormatting();
   }
 
-  static DateTime stringToDateTime(String str) {
-    if (str != null && str != 'null' && str.isNotEmpty) {
-      return DateTime.parse(str);
+  static DateTime unixToDateTime(int unix) {
+    if (unix != null) {
+      return DateTime.fromMicrosecondsSinceEpoch(unix * 1000);
+    }
+    return null;
+  }
+
+  static int dateTimeToUnix(DateTime dateTime) {
+    if (dateTime != null) {
+      String strUnixMilliseconds =
+          dateTime.toUtc().millisecondsSinceEpoch.toString();
+      String strUnixSeconds =
+          strUnixMilliseconds.substring(0, strUnixMilliseconds.length - 3);
+      return int.parse(strUnixSeconds);
     }
     return null;
   }
 
   static String formatDateWeek(DateTime date) {
     return DateFormat.yMMMMEEEEd().format(date);
-  }
-
-  static dateTimeToString(DateTime dateTime) {
-    if (dateTime != null) {
-      return dateTime.toIso8601String();
-    }
-    return null;
   }
 
   static String formatDate(DateTime date) {

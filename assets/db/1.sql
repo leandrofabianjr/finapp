@@ -2,26 +2,26 @@ create table category_type (
   id integer primary key autoincrement,
   name text not null,
   description integer,
-  created_at timestamp default current_timestamp,
-  deleted_at timestamp
+  created_at integer default (strftime('%s', 'now')),
+  deleted_at integer
 );
 
 create table category (
   id integer primary key autoincrement,
   name text not null,
   description text,
-  color int,
+  color integer,
   id_category_type integer not null constraint category_category_type_id_fk references category_type on update restrict on delete restrict,
-  created_at timestamp default current_timestamp,
-  deleted_at timestamp
+  created_at integer default (strftime('%s', 'now')),
+  deleted_at integer
 );
 
 create table account_type (
   id integer primary key autoincrement,
   name text not null,
   description text,
-  created_at timestamp default current_timestamp,
-  deleted_at timestamp
+  created_at integer default (strftime('%s', 'now')),
+  deleted_at integer
 );
 
 create table account (
@@ -29,8 +29,8 @@ create table account (
   name text not null,
   description text,
   id_account_type integer not null references account_type on update restrict on delete restrict,
-  created_at timestamp default current_timestamp,
-  deleted_at timestamp
+  created_at integer default (strftime('%s', 'now')),
+  deleted_at integer
 );
 
 create table movement (
@@ -38,11 +38,11 @@ create table movement (
   name integer not null,
   description text,
   value real not null,
-  datetime timestamp not null,
+  datetime integer not null,
   id_account integer not null references account on update restrict on delete restrict,
   id_category integer not null references category on update restrict on delete restrict,
-  created_at timestamp default current_timestamp,
-  deleted_at timestamp
+  created_at integer default (strftime('%s', 'now')),
+  deleted_at integer
 );
 
 insert into category_type (id, name, created_at)
