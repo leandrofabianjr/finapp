@@ -7,7 +7,10 @@ import 'db/db.dart';
 void main() {
   runApp(FinApp());
   Db.getDb()
-    .then((db) => debugPrint('Database started'))
+    .then((db) {
+      debugPrint('Database started');
+      // Db.seed(db);
+    })
     .catchError((err) => debugPrint('Can\'t start Database: ${err.toString()}'));
   DateHelper.setDefaultLocale();
 }

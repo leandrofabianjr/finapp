@@ -24,11 +24,12 @@ class Db {
   }
 
   static _migrateDb(Database db, currentVersion, newVersion) async {
-    List<int> versionsToMigrate = List<int>
-        .generate(newVersion - currentVersion, (i) => currentVersion + 1 + i);
+    List<int> versionsToMigrate = List<int>.generate(
+        newVersion - currentVersion, (i) => currentVersion + 1 + i);
 
     versionsToMigrate.forEach((version) async {
-      String script = await rootBundle.loadString(join('assets','db','$version.sql'));
+      String script =
+          await rootBundle.loadString(join('assets', 'db', '$version.sql'));
       debugPrint('Executing database scripts to version $version');
       var queries = script.split(';');
       queries.forEach((q) async {
@@ -41,5 +42,21 @@ class Db {
       });
       debugPrint('Migration succeeded');
     });
+  }
+
+  static seed(Database db) async {
+    String script =
+        await rootBundle.loadString(join('assets', 'db', 'seeds.sql'));
+    debugPrint('Executing database seeding scripts');
+    var queries = script.split(';');
+    queries.forEach((q) async {
+      String sql = q.trim();
+      if (sql.isNotEmpty) {
+        debugPrint(sql);
+        await db.execute(sql);
+        debugPrint('Query executed');
+      }
+    });
+    debugPrint('Seeding succeeded');
   }
 }
