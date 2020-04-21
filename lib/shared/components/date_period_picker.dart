@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 class DatePeriodPicker extends StatefulWidget {
   final DateTime initialFromDate;
   final DateTime initialToDate;
-  final void Function(DateTime fromDate, DateTime untilDate) onChange;
+  final void Function(DateTime fromDate, DateTime toDate) onChange;
+  final bool disabled;
 
   DatePeriodPicker(
-      {this.initialFromDate, this.initialToDate, @required this.onChange});
+      {@required this.onChange,
+      this.initialFromDate,
+      this.initialToDate,
+      this.disabled = false});
 
   @override
   _DatePeriodPickerState createState() => _DatePeriodPickerState();
@@ -24,13 +28,14 @@ class _DatePeriodPickerState extends State<DatePeriodPicker> {
     final nowDateTime = DateTime.now();
     _fromDate = _fromDate ?? widget.initialFromDate ?? nowDateTime;
     _toDate = _toDate ?? widget.initialToDate ?? nowDateTime;
-    _fromDateCtrl.text = DateHelper.formatDate(_fromDate);
-    _toDateCtrl.text = DateHelper.formatDate(_toDate);
+    _fromDateCtrl.text = widget.disabled ? '' : DateHelper.formatDate(_fromDate);
+    _toDateCtrl.text = widget.disabled ? '' : DateHelper.formatDate(_toDate);
 
     return Row(mainAxisSize: MainAxisSize.max, children: <Widget>[
       Expanded(
         flex: 1,
         child: TextField(
+          enabled: !widget.disabled,
           decoration: InputDecoration(
             labelText: 'De',
           ),
@@ -58,6 +63,7 @@ class _DatePeriodPickerState extends State<DatePeriodPicker> {
         child: Padding(
           padding: const EdgeInsets.only(left: 16),
           child: TextFormField(
+            enabled: !widget.disabled,
             decoration: InputDecoration(
               labelText: 'Até',
             ),

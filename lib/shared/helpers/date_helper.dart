@@ -2,6 +2,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class DateHelper {
+  static DateTime get currentDate => DateTime.now();
+
   static void setDefaultLocale() async {
     Intl.defaultLocale = 'pt_BR';
     await initializeDateFormatting();
@@ -53,5 +55,35 @@ class DateHelper {
       'Novembro',
       'Dezembro'
     ];
+  }
+
+  static DateTime firstMomentOfTheDay(DateTime datetime) {
+    var duration = Duration(
+      hours: datetime.hour,
+      minutes: datetime.minute,
+      seconds: datetime.second,
+      milliseconds: datetime.millisecond,
+      microseconds: datetime.microsecond,
+    );
+    return datetime.subtract(duration);
+  }
+
+  static DateTime lastMomentOfTheDay(DateTime datetime) {
+    var duration = Duration(
+      hours: datetime.hour,
+      minutes: datetime.minute,
+      seconds: datetime.second + 1,
+      milliseconds: datetime.millisecond,
+      microseconds: datetime.microsecond,
+    );
+    return datetime.add(Duration(days: 1)).subtract(duration);
+  }
+
+  static int firstMomentOfTheDayUnix(DateTime datetime) {
+    return dateTimeToUnix(firstMomentOfTheDay(datetime));
+  }
+
+  static int lastMomentOfTheDayUnix(DateTime datetime) {
+    return dateTimeToUnix(lastMomentOfTheDay(datetime));
   }
 }

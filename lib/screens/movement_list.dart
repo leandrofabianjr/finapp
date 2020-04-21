@@ -1,24 +1,28 @@
 import 'package:finapp/db/daos/account_dao.dart';
 import 'package:finapp/db/daos/category_dao.dart';
 import 'package:finapp/db/daos/movement_dao.dart';
+import 'package:finapp/models/account.dart';
 import 'package:finapp/models/category.dart';
 import 'package:finapp/models/movement.dart';
+import 'package:finapp/screens/movement_list_filter_dialog.dart';
 import 'package:finapp/screens/movement_new_screen.dart';
-import 'package:finapp/shared/components/custom_month_picker.dart';
-import 'package:finapp/shared/components/date_period_picker.dart';
 import 'package:finapp/shared/components/loading_warning.dart';
 import 'package:finapp/shared/helpers/date_helper.dart';
 import 'package:flutter/material.dart';
 
 class MovementListScreen extends StatefulWidget {
+  final AccountDao _accDao = AccountDao();
+  final CategoryDao _catDao = CategoryDao();
+
   @override
   _MovementListScreenState createState() => _MovementListScreenState();
 }
 
 class _MovementListScreenState extends State<MovementListScreen> {
-  CategoryDao _catDao = CategoryDao();
-  AccountDao _accDao = AccountDao();
-  bool _showingDatePickers = false;
+  Map<int, Account> _allAccount;
+  Map<int, Category> _allCategories;
+
+  MovementFilters _filters = MovementFilters();
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +30,22 @@ class _MovementListScreenState extends State<MovementListScreen> {
       appBar: AppBar(
         title: Text('Movimentações'),
         actions: <Widget>[
-          MaterialButton(
-            child: Icon(Icons.date_range, color: Colors.white),
-            color: _showingDatePickers
-                ? Theme.of(context).accentColor.withAlpha(64)
-                : null,
+          IconButton(
+            icon: Icon(Icons.filter_list),
             onPressed: () {
-              setState(() => _showingDatePickers = !_showingDatePickers);
+              Navigator.push<MovementFilters>(
+                context,
+                MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (BuildContext context) =>
+                      MovementListFilterDialog(filters: _filters),
+                ),
+              ).then((val) {
+                if (val != null) {
+                  setState(() => _filters = val);
+                }
+              });
             },
-            shape: CircleBorder(),
-            minWidth: kToolbarHeight,
           ),
           IconButton(
             icon: Icon(Icons.search),
@@ -43,39 +53,31 @@ class _MovementListScreenState extends State<MovementListScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          MovementsListFilter(
-              showingDatePickers: _showingDatePickers, context: context),
-          Expanded(
-            child: FutureBuilder<List<Movement>>(
-              initialData: List(),
-              future: () async {
-                await _accDao.findAll(cache: true);
-                await _catDao.findAll(cache: true);
-                return await MovementDao().findAllOrderedByDate();
-              }(),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    return EmptyListWarning();
-                    break;
-                  case ConnectionState.waiting:
-                    return LoadingWarning();
-                    break;
-                  case ConnectionState.done:
-                    if (snapshot.data.isEmpty) {
-                      return EmptyListWarning();
-                    }
-                    return _buildMovementsList(snapshot.data);
-                    break;
-                  default:
-                    return Text('Erro desconhecido');
-                }
-              },
-            ),
-          ),
-        ],
+      body: FutureBuilder<List<Movement>>(
+        initialData: List(),
+        future: () async {
+          _allAccount = await widget._accDao.findAllAsMap(cache: true);
+          _allCategories = await widget._catDao.findAllAsMap(cache: true);
+          return await MovementDao().queryFromFilters(_filters);
+        }(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return EmptyListWarning();
+              break;
+            case ConnectionState.waiting:
+              return LoadingWarning();
+              break;
+            case ConnectionState.done:
+              if (snapshot.data.isEmpty) {
+                return EmptyListWarning();
+              }
+              return _buildMovementsList(snapshot.data);
+              break;
+            default:
+              return Text('Erro desconhecido');
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {
@@ -96,64 +98,15 @@ class _MovementListScreenState extends State<MovementListScreen> {
     List<Widget> list = List();
     for (int i = 0; i < movements.length; i++) {
       final movement = movements[i];
-      debugPrint(movement.toString());
-
       if (day != movement.datetime.day || month != movement.datetime.month) {
         day = movement.datetime.day;
         month = movement.datetime.month;
         list.add(DayDivider(day: day, movement: movement));
       }
-      list.add(MovementListTile(movement: movement, categories: _catDao.cache));
+      list.add(
+          MovementListTile(movement: movement, categories: _allCategories));
     }
     return ListView(children: list);
-  }
-}
-
-class MovementsListFilter extends StatelessWidget {
-  const MovementsListFilter({
-    Key key,
-    @required this.showingDatePickers,
-    @required this.context,
-  }) : super(key: key);
-
-  final bool showingDatePickers;
-  final BuildContext context;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget content;
-    if (showingDatePickers) {
-      content = DatePeriodPicker(
-        onChange: (DateTime fromDate, DateTime untilDate) {
-          debugPrint(fromDate.toString());
-          debugPrint(untilDate.toString());
-        },
-      );
-    } else {
-      int currentMonth = DateTime.now().month;
-      int currentYear = DateTime.now().year;
-      content = CustomMonthPicker(
-        onChange: (year, month) {
-          debugPrint(year.toString() + ' ' + month.toString());
-        },
-        firstMonth: 1,
-        firstYear: currentYear - 5,
-        lastMonth: 12,
-        lastYear: currentYear + 5,
-        initialMonth: currentMonth,
-        initialYear: currentYear,
-      );
-    }
-
-    return Container(
-      width: double.infinity,
-      height: 64,
-      color: Theme.of(context).accentColor,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 4),
-        child: content,
-      ),
-    );
   }
 }
 
@@ -207,7 +160,7 @@ class MovementListTile extends StatelessWidget {
               ),
             ],
           ),
-          title: Text(movement.name + ' ' + movement.datetime.day.toString()),
+          title: Text(movement.name),
           subtitle: Row(children: <Widget>[
             Text(category.name),
           ])),

@@ -5,11 +5,11 @@ import 'package:sqflite/sqflite.dart';
 
 abstract class Dao<T extends Model> {
   String tblName;
-  
+
   String colCreatedAt = 'created_at';
   String colDeletedAt = 'deleted_at';
 
-  Map<int, T> cache = Map();
+  Map<int, T> _mapCache;
 
   Map<String, dynamic> toRow(T obj);
   T toObj(Map<String, dynamic> row);
@@ -22,22 +22,30 @@ abstract class Dao<T extends Model> {
     return obj;
   }
 
-  Future<List<T>> findAll({bool cache = false, String orderBy}) async {
+  Future<List<T>> findAll({String orderBy, String where, List<dynamic> whereArgs}) async {
     final Database db = await Db.getDb();
-    final List<Map<String, dynamic>> result = await db.query(tblName, orderBy: orderBy);
+    final List<Map<String, dynamic>> result =
+        await db.query(tblName, orderBy: orderBy, where: where, whereArgs: whereArgs);
     List<T> list = _toObjList(result);
-    if (cache) {
-      _saveCache(list);
-    }
     return list;
+  }
+
+  Future<Map<int, T>> findAllAsMap({bool cache = false, String orderBy}) async {
+    if (cache && this._mapCache != null) {
+      return this._mapCache;
+    }
+    List<T> list = await findAll(orderBy: orderBy);
+    if (cache) {
+      this._mapCache = Map();
+      list.forEach((obj) => this._mapCache[obj.id] = obj);
+    }
+    return this._mapCache;
   }
 
   Future<T> findById(int pk) async {
     final Database db = await Db.getDb();
-    final List<Map<String, dynamic>> result = await db.query(tblName,
-        where: 'id = ?',
-        whereArgs: [pk]
-    );
+    final List<Map<String, dynamic>> result =
+        await db.query(tblName, where: 'id = ?', whereArgs: [pk]);
     var cat = _toObj(result.first);
     return cat;
   }
@@ -58,10 +66,5 @@ abstract class Dao<T extends Model> {
     row[colCreatedAt] = DateHelper.dateTimeToUnix(obj.createdAt);
     row[colDeletedAt] = DateHelper.dateTimeToUnix(obj.deletedAt);
     return row;
-  }
-
-  _saveCache(List<T> list) {
-    this.cache.clear();
-    list.forEach((obj) => this.cache[obj.id] = obj);
   }
 }

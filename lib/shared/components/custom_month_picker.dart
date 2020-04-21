@@ -9,6 +9,7 @@ class CustomMonthPicker extends StatefulWidget {
   final int initialMonth;
   final int initialYear;
   final Function(int year, int month) onChange;
+  final bool disabled;
 
   CustomMonthPicker(
       {@required this.onChange,
@@ -17,7 +18,8 @@ class CustomMonthPicker extends StatefulWidget {
       @required this.lastMonth,
       @required this.lastYear,
       @required this.initialMonth,
-      @required this.initialYear});
+      @required this.initialYear,
+      this.disabled = false});
 
   @override
   _CustomMonthPickerState createState() => _CustomMonthPickerState();
@@ -41,13 +43,8 @@ class _CustomMonthPickerState extends State<CustomMonthPicker> {
             ),
             isDense: true,
             items: _buildMonthItems(),
-            onChanged: (v) {
-              setState(() {
-                _month = v;
-                widget.onChange(_year, _month);
-              });
-            },
-            value: _month,
+            onChanged: widget.disabled ? null : _onChangeMonth,
+            value: widget.disabled ? null : _month,
           ),
         ),
         Expanded(
@@ -59,18 +56,27 @@ class _CustomMonthPickerState extends State<CustomMonthPicker> {
               ),
               isDense: true,
               items: _buildYearItems(),
-              onChanged: (v) {
-                setState(() {
-                  _year = v;
-                  widget.onChange(_year, _month);
-                });
-              },
-              value: _year,
+              onChanged: widget.disabled ? null : _onChangeYear,
+              value: widget.disabled ? null : _year,
             ),
           ),
         ),
       ],
     );
+  }
+
+  void _onChangeYear(v) {
+    setState(() {
+      _year = v;
+      widget.onChange(_year, _month);
+    });
+  }
+
+  void _onChangeMonth(v) {
+    setState(() {
+      _month = v;
+      widget.onChange(_year, _month);
+    });
   }
 
   List<DropdownMenuItem<int>> _buildMonthItems() {
