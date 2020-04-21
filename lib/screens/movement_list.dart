@@ -130,16 +130,24 @@ class MovementsListFilter extends StatelessWidget {
         },
       );
     } else {
+      int currentMonth = DateTime.now().month;
+      int currentYear = DateTime.now().year;
       content = CustomMonthPicker(
-        onChange: (value) {
-          debugPrint(value.toString());
+        onChange: (year, month) {
+          debugPrint(year.toString() + ' ' + month.toString());
         },
+        firstMonth: 1,
+        firstYear: currentYear - 5,
+        lastMonth: 12,
+        lastYear: currentYear + 5,
+        initialMonth: currentMonth,
+        initialYear: currentYear,
       );
     }
 
     return Container(
       width: double.infinity,
-      height: 56,
+      height: 64,
       color: Theme.of(context).accentColor,
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 4),
